@@ -1,5 +1,11 @@
 # RiceMillOS - Digital Rice Mill Management System
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?logo=supabase&logoColor=white)](https://supabase.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+
 A comprehensive digital platform designed to transform traditional rice mill operations into efficient, transparent, and data-driven businesses.
 
 ## 🎯 Project Overview
@@ -54,36 +60,62 @@ ricemillos/
 
 ### Prerequisites
 - Node.js 18+
-- Supabase CLI
 - Git
+- Supabase account
 
-### Development Setup
+### Installation
+
 ```bash
-# Clone repository
-git clone https://github.com/your-org/ricemillos.git
-cd ricemillos
+# Clone the repository
+git clone https://github.com/rossdistributionbato/QoderERPCoop.git
+cd QoderERPCoop
 
 # Install dependencies
 npm install
 
-# Set up Supabase locally
-npx supabase start
-
-# Set up environment
+# Set up environment variables
 cp .env.example .env.local
-# Edit .env.local with your Supabase configuration
+# Edit .env.local with your Supabase credentials
 
-# Generate TypeScript types from Supabase
-npm run supabase:generate
+# Set up database (see DATABASE-SETUP.md for details)
+# Go to your Supabase dashboard and run the SQL schema
 
 # Start development server
 npm run dev
 ```
 
-This will start:
-- Frontend server at http://localhost:3000
-- Supabase local API at http://localhost:54321
-- Database at localhost:54322
+Visit http://localhost:3000 to see your rice mill management system!
+
+## 📚 Documentation
+
+- **[Product Requirements Document](./PRD-RiceMillOS.md)** - Complete feature specifications
+- **[System Architecture](./Architecture-Design.md)** - Technical architecture and database design
+- **[Implementation Plan](./Implementation-Plan.md)** - Detailed development roadmap
+- **[Database Setup Guide](./DATABASE-SETUP.md)** - Step-by-step database configuration
+- **[Project Structure](./PROJECT-STRUCTURE.md)** - Codebase organization guide
+- **[Development TODO](./TODO.md)** - 200+ tasks across 22-28 weeks
+
+## 🏗️ Current Status
+
+✅ **Phase 1: Foundation Complete**
+- Project structure and configuration
+- Database schema with Row Level Security
+- Supabase integration
+- Next.js 14 frontend with PWA support
+- Authentication system
+- Comprehensive documentation
+
+🚧 **Phase 2: Development In Progress**
+- User interface implementation
+- Farmer management module
+- Procurement system
+- Inventory management
+
+## 🔗 Live Demo
+
+- **Frontend**: Coming soon
+- **Documentation**: Available in this repository
+- **Database Schema**: Ready for deployment
 
 ## 📋 Development Roadmap
 
@@ -157,6 +189,32 @@ npm run deploy:production
 - Write tests for new features
 - Use conventional commits
 - Maintain >80% test coverage
+- Follow the monorepo structure with Turborepo
+
+## 📊 Project Metrics
+
+- **Lines of Code**: 6,000+
+- **Documentation Pages**: 10+
+- **Database Tables**: 25+
+- **Development Tasks**: 200+
+- **Implementation Timeline**: 22-28 weeks
+- **Expected ROI**: 15% profit improvement
+
+## 🌐 Deployment
+
+### Production Deployment
+- **Frontend**: Vercel (recommended)
+- **Backend**: Supabase
+- **Database**: PostgreSQL (Supabase)
+- **Storage**: Supabase Storage
+- **CDN**: Vercel Edge Network
+
+### Environment Setup
+1. Create Supabase project
+2. Deploy database schema
+3. Configure environment variables
+4. Deploy to Vercel
+5. Set up custom domain (optional)
 
 ## 📄 License
 
