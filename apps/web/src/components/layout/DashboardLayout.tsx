@@ -3,18 +3,17 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { 
-  Wheat, 
-  Users, 
-  Package, 
-  TrendingUp, 
-  Calculator, 
-  FileText,
-  Settings,
-  LogOut,
-  Menu,
-  X
-} from 'lucide-react';
+// Temporary icon replacements
+const Wheat = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>🌾</span>;
+const Users = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>👥</span>;
+const Package = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>📦</span>;
+const TrendingUp = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>📈</span>;
+const Calculator = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>🔢</span>;
+const FileText = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>📄</span>;
+const Settings = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>⚙️</span>;
+const LogOut = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>🚪</span>;
+const Menu = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>☰</span>;
+const X = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>❌</span>;
 import { useState } from 'react';
 
 interface DashboardLayoutProps {
@@ -59,6 +58,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     { name: 'Inventory', href: '/dashboard/inventory', icon: Package, current: false },
     { name: 'Sales', href: '/dashboard/sales', icon: Calculator, current: false },
     { name: 'Reports', href: '/dashboard/reports', icon: FileText, current: false },
+    { name: 'Users', href: '/dashboard/users', icon: Users, current: false },
     { name: 'Settings', href: '/dashboard/settings', icon: Settings, current: false },
   ];
 

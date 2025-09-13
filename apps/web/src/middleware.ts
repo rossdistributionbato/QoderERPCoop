@@ -1,13 +1,12 @@
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
   const res = NextResponse.next();
   
-  // Create a Supabase client configured to use cookies
-  const supabase = createServerComponentClient({ cookies: () => cookies() });
+  // Create a Supabase client configured for middleware
+  const supabase = createMiddlewareClient({ req: request, res: res });
 
   // Refresh session if expired - required for Server Components
   const {

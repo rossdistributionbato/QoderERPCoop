@@ -4,6 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
 // import { Wheat, Eye, EyeOff, Loader2 } from 'lucide-react';
 
 // Temporary icon replacements
@@ -12,31 +14,73 @@ const Eye = ({ className }: { className?: string }) => <span className={`${class
 const EyeOff = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>🙈</span>;
 const Loader2 = ({ className }: { className?: string }) => <span className={`${className} inline-block animate-spin`}>⏳</span>;
 
+// Form validation schema
+const loginSchema = z.object({
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string().min(1, 'Password is required'),
+  rememberMe: z.boolean().optional(),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
+
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
   const { signIn } = useAuth();
   const router = useRouter();
+  
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError: setFormError,
+    clearErrors,
+  } = useForm<LoginFormData>({
+    defaultValues: {
+      email: '',
+      password: '',
+      rememberMe: false,
+    },
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: LoginFormData) => {
     setError('');
+    clearErrors();
     setIsLoading(true);
 
     try {
-      const { error } = await signIn(email, password);
+      // Validate form data
+      const validatedData = loginSchema.parse(data);
+      
+      const { error } = await signIn(validatedData.email, validatedData.password);
       
       if (error) {
-        setError(error.message);
+        // Handle specific Supabase auth errors
+        if (error.message.includes('Invalid login credentials')) {
+          setError('Invalid email or password. Please check your credentials and try again.');
+        } else if (error.message.includes('Email not confirmed')) {
+          setError('Please check your email and click the confirmation link before signing in.');
+        } else if (error.message.includes('Too many requests')) {
+          setError('Too many login attempts. Please wait a few minutes before trying again.');
+        } else {
+          setError(error.message);
+        }
       } else {
         router.push('/dashboard');
       }
     } catch (err) {
-      setError('An unexpected error occurred');
+      if (err instanceof z.ZodError) {
+        // Handle validation errors
+        err.errors.forEach((error) => {
+          setFormError(error.path[0] as keyof LoginFormData, {
+            message: error.message,
+          });
+        });
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -59,7 +103,7 @@ export default function LoginPage() {
 
         {/* Login Form */}
         <div className="bg-white rounded-lg shadow-lg p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {error && (
               <div className="bg-red-50 border border-red-200 rounded-md p-4">
                 <p className="text-sm text-red-600">{error}</p>
@@ -71,17 +115,19 @@ export default function LoginPage() {
                 Email Address
               </label>
               <input
+                {...register('email')}
                 id="email"
-                name="email"
                 type="email"
                 autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                className={`w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
+                  errors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300'
+                }`}
                 placeholder="Enter your email"
                 disabled={isLoading}
               />
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+              )}
             </div>
 
             <div>
@@ -90,14 +136,13 @@ export default function LoginPage() {
               </label>
               <div className="relative">
                 <input
+                  {...register('password')}
                   id="password"
-                  name="password"
                   type={showPassword ? 'text' : 'password'}
                   autoComplete="current-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                  className={`w-full px-3 py-2 pr-10 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
+                    errors.password ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300'
+                  }`}
                   placeholder="Enter your password"
                   disabled={isLoading}
                 />
@@ -114,15 +159,19 @@ export default function LoginPage() {
                   )}
                 </button>
               </div>
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
+              )}
             </div>
 
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <input
+                  {...register('rememberMe')}
                   id="remember-me"
-                  name="remember-me"
                   type="checkbox"
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                  disabled={isLoading}
                 />
                 <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
                   Remember me

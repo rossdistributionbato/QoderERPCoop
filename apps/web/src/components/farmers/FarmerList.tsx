@@ -1,17 +1,17 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { 
-  Users, 
-  Search, 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Phone, 
-  MapPin,
-  AlertCircle,
-  Loader2
-} from 'lucide-react';
+
+// Unicode icon components
+const Users = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>👥</span>;
+const Search = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>🔍</span>;
+const Plus = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>➕</span>;
+const Edit = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>✏️</span>;
+const Trash2 = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>🗑️</span>;
+const Phone = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>📞</span>;
+const MapPin = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>📍</span>;
+const AlertCircle = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>⚠️</span>;
+const Loader2 = ({ className }: { className?: string }) => <span className={`${className} inline-block animate-spin`}>⏳</span>;
 
 interface Farmer {
   id: string;

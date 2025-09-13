@@ -1,0 +1,54 @@
+# Netlify Configuration for RiceMillOS
+[build]
+  # Build command for the Next.js application
+  command = "chmod +x build.sh && ./build.sh"
+  
+  # Directory where the built files are located
+  publish = "apps/web/out"
+  
+  # Base directory for the build
+  base = "."
+
+# Environment variables for production
+[build.environment]
+  # Node.js version
+  NODE_VERSION = "18"
+  
+  # NPM version
+  NPM_VERSION = "8"
+  
+  # Enable Next.js standalone build
+  NEXT_TELEMETRY_DISABLED = "1"
+
+# Redirects and rewrites for Next.js app routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  conditions = {Role = ["admin"], Country = ["US"]}
+
+# Headers for security and performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://rwwubiimzkxmeqpwtsjn.supabase.co; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://rwwubiimzkxmeqpwtsjn.supabase.co wss://rwwubiimzkxmeqpwtsjn.supabase.co; font-src 'self' data:;"
+
+# Cache static assets
+[[headers]]
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Development preview settings
+[context.branch-deploy]
+  command = "npm run build"
+
+[context.deploy-preview]
+  command = "npm run build"
+
+# Functions (if needed for API routes)
+[functions]
+  directory = "apps/web/.netlify/functions"

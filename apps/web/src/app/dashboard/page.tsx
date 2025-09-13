@@ -2,16 +2,16 @@
 
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { useAuth } from '@/contexts/AuthContext';
-import { 
-  Users, 
-  Package, 
-  TrendingUp, 
-  Calculator,
-  Wheat,
-  AlertTriangle,
-  ArrowUpRight,
-  ArrowDownRight
-} from 'lucide-react';
+
+// Unicode icon components
+const Users = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>👥</span>;
+const Package = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>📦</span>;
+const TrendingUp = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>📈</span>;
+const Calculator = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>🧮</span>;
+const Wheat = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>🌾</span>;
+const AlertTriangle = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>⚠️</span>;
+const ArrowUpRight = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>↗️</span>;
+const ArrowDownRight = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>↘️</span>;
 
 export default function DashboardPage() {
   const { user } = useAuth();

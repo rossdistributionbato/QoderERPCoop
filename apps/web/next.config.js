@@ -1,7 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Output configuration for static hosting
+  output: 'export',
+  trailingSlash: true,
+  distDir: 'out',
+  
   images: {
     domains: ['rwwubiimzkxmeqpwtsjn.supabase.co'],
+    unoptimized: true, // Required for static export
+  },
+  
+  // Environment variables
+  env: {
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   },
   async headers() {
     return [

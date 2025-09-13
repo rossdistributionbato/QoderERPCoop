@@ -50,6 +50,9 @@ export default function HomePage() {
             <Link href="/demo" className="btn-secondary text-lg px-8 py-3">
               View Demo
             </Link>
+            <Link href="/database-test" className="bg-green-600 text-white hover:bg-green-700 text-lg px-8 py-3 rounded-lg transition-colors">
+              Test Database
+            </Link>
           </div>
         </div>
       </section>
