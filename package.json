@@ -43,6 +43,8 @@
     "docker:prod": "docker-compose -f docker-compose.prod.yml up -d",
     "deploy:staging": "npm run build && vercel --prod",
     "deploy:production": "npm run build && vercel --prod",
+    "deploy:netlify": "cd apps/web && npm run build",
+    "build:web": "cd apps/web && npm run build",
     "clean": "turbo run clean && rm -rf node_modules",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "prepare": "husky install"
