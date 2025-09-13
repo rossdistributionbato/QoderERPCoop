@@ -1,0 +1,1 @@
+export * from '@ricemillos/shared/types/supabase';
