@@ -1,7 +1,7 @@
 # Netlify Configuration for RiceMillOS
 [build]
   # Build command for the Next.js application
-  command = "chmod +x build.sh && ./build.sh"
+  command = "npm install && cd apps/web && npm run build"
   
   # Directory where the built files are located
   publish = "apps/web/out"
