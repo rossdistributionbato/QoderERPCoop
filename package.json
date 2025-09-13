@@ -94,5 +94,8 @@
     "pwa"
   ],
   "author": "RiceMillOS Team",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.1"
+  }
 }

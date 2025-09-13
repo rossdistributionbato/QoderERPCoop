@@ -25,7 +25,7 @@ const queryClient = new QueryClient({
 });
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [supabase] = useState(() => createClientComponentClient<Database>());
+  const [supabase] = useState(() => createClientComponentClient());
 
   return (
     <QueryClientProvider client={queryClient}>
