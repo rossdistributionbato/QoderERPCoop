@@ -1,70 +1,7 @@
 version: '3.8'
 
 services:
-  # PostgreSQL Database
-  postgres:
-    image: postgres:15-alpine
-    container_name: ricemillos-postgres
-    environment:
-      POSTGRES_DB: ricemillos_dev
-      POSTGRES_USER: ricemillos
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./tools/docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - ricemillos-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ricemillos"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # Redis Cache
-  redis:
-    image: redis:7-alpine
-    container_name: ricemillos-redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    networks:
-      - ricemillos-network
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # API Development Server
-  api:
-    build:
-      context: .
-      dockerfile: ./apps/api/Dockerfile.dev
-    container_name: ricemillos-api
-    environment:
-      - NODE_ENV=development
-      - DATABASE_URL=postgresql://ricemillos:password@postgres:5432/ricemillos_dev
-      - REDIS_URL=redis://redis:6379
-    ports:
-      - "3001:3001"
-    volumes:
-      - ./apps/api:/app/apps/api
-      - ./packages:/app/packages
-      - /app/node_modules
-      - /app/apps/api/node_modules
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    networks:
-      - ricemillos-network
-    command: npm run dev
-
-  # Web Development Server
+  # Next.js Web Application
   web:
     build:
       context: .
@@ -72,21 +9,50 @@ services:
     container_name: ricemillos-web
     environment:
       - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
+      - NEXT_PUBLIC_SUPABASE_URL=https://rwwubiimzkxmeqpwtsjn.supabase.co
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3d3ViaWltemt4bWVxcHd0c2puIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk3MTY4MzMsImV4cCI6MjA2NTI5MjgzM30.kJCMNLsscsd8g6XUdsvGADLSSLHvE-0M1N9AUNGVi2s
+      - NEXT_PUBLIC_APP_NAME=RiceMillOS
+      - NEXT_PUBLIC_APP_VERSION=1.0.0
+      - ENABLE_OFFLINE_MODE=true
     ports:
       - "3000:3000"
     volumes:
       - ./apps/web:/app/apps/web
       - ./packages:/app/packages
+      - ./package.json:/app/package.json
+      - ./turbo.json:/app/turbo.json
+      # Exclude node_modules to avoid conflicts
       - /app/node_modules
       - /app/apps/web/node_modules
-    depends_on:
-      - api
     networks:
       - ricemillos-network
-    command: npm run dev
+    stdin_open: true
+    tty: true
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-  # Database Administration
+  # Redis Cache (for session management and caching)
+  redis:
+    image: redis:7-alpine
+    container_name: ricemillos-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      - ./tools/docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - ricemillos-network
+    command: redis-server /usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Database Administration UI
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: ricemillos-pgadmin
@@ -94,18 +60,52 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@ricemillos.com
       PGADMIN_DEFAULT_PASSWORD: admin123
       PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_LISTEN_PORT: 80
     ports:
       - "5050:80"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
-    depends_on:
-      - postgres
+      - ./tools/docker/pgadmin/servers.json:/pgadmin4/servers.json
     networks:
       - ricemillos-network
+    profiles:
+      - tools
+
+  # Nginx Reverse Proxy (for production-like routing)
+  nginx:
+    image: nginx:alpine
+    container_name: ricemillos-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./tools/docker/nginx/nginx.dev.conf:/etc/nginx/nginx.conf
+      - ./tools/docker/nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - web
+    networks:
+      - ricemillos-network
+    profiles:
+      - proxy
+
+  # Development Tools Container
+  dev-tools:
+    build:
+      context: .
+      dockerfile: ./tools/docker/dev-tools/Dockerfile
+    container_name: ricemillos-dev-tools
+    volumes:
+      - .:/workspace
+      - /var/run/docker.sock:/var/run/docker.sock
+    working_dir: /workspace
+    networks:
+      - ricemillos-network
+    profiles:
+      - tools
+    stdin_open: true
+    tty: true
 
 volumes:
-  postgres_data:
-    driver: local
   redis_data:
     driver: local
   pgadmin_data:
@@ -114,3 +114,6 @@ volumes:
 networks:
   ricemillos-network:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

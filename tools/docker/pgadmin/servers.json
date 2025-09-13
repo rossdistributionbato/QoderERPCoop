@@ -1,0 +1,15 @@
+{
+  "servers": {
+    "1": {
+      "Name": "Local Supabase",
+      "Group": "Servers",
+      "Host": "127.0.0.1",
+      "Port": 54322,
+      "MaintenanceDB": "postgres",
+      "Username": "postgres",
+      "UseSSHTunnel": 0,
+      "TunnelPort": "22",
+      "TunnelAuthentication": 0
+    }
+  }
+}
