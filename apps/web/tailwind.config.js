@@ -64,7 +64,8 @@ module.exports = {
     },
   },
   plugins: [
-    require('@tailwindcss/forms'),
-    require('@tailwindcss/typography'),
+    // Tailwind plugins temporarily disabled due to missing packages
+    // require('@tailwindcss/forms'),
+    // require('@tailwindcss/typography'),
   ],
 };

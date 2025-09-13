@@ -1,5 +1,13 @@
 import Link from 'next/link';
-import { Grain, Users, Package, TrendingUp, Calculator, FileText } from 'lucide-react';
+// import { Wheat, Users, Package, TrendingUp, Calculator, FileText } from 'lucide-react';
+
+// Temporary icon replacements
+const Wheat = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>🌾</span>;
+const Users = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>👥</span>;
+const Package = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>📦</span>;
+const TrendingUp = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>📈</span>;
+const Calculator = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>🧮</span>;
+const FileText = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>📄</span>;
 
 export default function HomePage() {
   return (
@@ -9,7 +17,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center space-x-3">
-              <Grain className="h-8 w-8 text-primary-600" />
+              <Wheat className="h-8 w-8 text-primary-600" />
               <h1 className="text-2xl font-bold text-gray-900">RiceMillOS</h1>
             </div>
             <nav className="hidden md:flex space-x-8">
@@ -140,7 +148,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-3 mb-4">
-                <Grain className="h-6 w-6" />
+                <Wheat className="h-6 w-6" />
                 <span className="text-xl font-bold">RiceMillOS</span>
               </div>
               <p className="text-gray-400">
@@ -150,25 +158,25 @@ export default function HomePage() {
             <div>
               <h5 className="font-semibold mb-4">Product</h5>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="/features">Features</Link></li>
-                <li><Link href="/pricing">Pricing</Link></li>
+                <li><Link href="/contact">Features</Link></li>
+                <li><Link href="/contact">Pricing</Link></li>
                 <li><Link href="/demo">Demo</Link></li>
               </ul>
             </div>
             <div>
               <h5 className="font-semibold mb-4">Support</h5>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="/docs">Documentation</Link></li>
-                <li><Link href="/support">Help Center</Link></li>
+                <li><Link href="/contact">Documentation</Link></li>
+                <li><Link href="/contact">Help Center</Link></li>
                 <li><Link href="/contact">Contact Us</Link></li>
               </ul>
             </div>
             <div>
               <h5 className="font-semibold mb-4">Company</h5>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="/about">About</Link></li>
-                <li><Link href="/privacy">Privacy</Link></li>
-                <li><Link href="/terms">Terms</Link></li>
+                <li><Link href="/contact">About</Link></li>
+                <li><Link href="/contact">Privacy</Link></li>
+                <li><Link href="/contact">Terms</Link></li>
               </ul>
             </div>
           </div>
@@ -188,7 +196,7 @@ const features = [
     description: 'Complete farmer database with credit tracking, transaction history, and communication tools.',
   },
   {
-    icon: Grain,
+    icon: Wheat,
     title: 'Procurement System',
     description: 'Digital paddy intake with quality parameters, automatic calculations, and instant receipts.',
   },
