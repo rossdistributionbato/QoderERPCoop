@@ -1,8 +1,9 @@
 'use client';
 
 import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
+import Link from 'next/link';
 // Temporary icon replacements
 const Wheat = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>🌾</span>;
 const Users = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>👥</span>;
@@ -10,6 +11,11 @@ const Package = ({ className }: { className?: string }) => <span className={`${c
 const TrendingUp = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>📈</span>;
 const Calculator = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>🔢</span>;
 const FileText = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>📄</span>;
+const BarChart3 = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>📊</span>;
+const Target = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>🎯</span>;
+const Award = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>🏆</span>;
+const Wrench = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>🔧</span>;
+const Factory = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>🏭</span>;
 const Settings = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>⚙️</span>;
 const LogOut = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>🚪</span>;
 const Menu = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>☰</span>;
@@ -23,6 +29,7 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { user, signOut, loading } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
@@ -52,15 +59,28 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: TrendingUp, current: true },
-    { name: 'Farmers', href: '/dashboard/farmers', icon: Users, current: false },
-    { name: 'Procurement', href: '/dashboard/procurement', icon: Wheat, current: false },
-    { name: 'Inventory', href: '/dashboard/inventory', icon: Package, current: false },
-    { name: 'Sales', href: '/dashboard/sales', icon: Calculator, current: false },
-    { name: 'Reports', href: '/dashboard/reports', icon: FileText, current: false },
-    { name: 'Users', href: '/dashboard/users', icon: Users, current: false },
-    { name: 'Settings', href: '/dashboard/settings', icon: Settings, current: false },
+    { name: 'Dashboard', href: '/dashboard', icon: TrendingUp },
+    { name: 'Farmers', href: '/dashboard/farmers', icon: Users },
+    { name: 'Procurement', href: '/dashboard/procurement', icon: Wheat },
+    { name: 'Production', href: '/dashboard/production', icon: Factory },
+    { name: 'Inventory', href: '/dashboard/inventory', icon: Package },
+    { name: 'Sales', href: '/dashboard/sales', icon: Calculator },
+    { name: 'Reports', href: '/dashboard/reports', icon: FileText },
+    { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
+    { name: 'KPIs', href: '/dashboard/kpi', icon: Target },
+    { name: 'Executive', href: '/dashboard/executive', icon: Award },
+    { name: 'Report Builder', href: '/dashboard/report-builder', icon: Wrench },
+    { name: 'Users', href: '/dashboard/users', icon: Users },
+    { name: 'Settings', href: '/dashboard/settings', icon: Settings },
   ];
+
+  // Helper function to determine if a navigation item is current
+  const isCurrentPage = (href: string) => {
+    if (href === '/dashboard') {
+      return pathname === '/dashboard';
+    }
+    return pathname.startsWith(href);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -86,18 +106,22 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <nav className="mt-5 flex-shrink-0 h-full divide-y divide-gray-200 overflow-y-auto">
               <div className="px-2 space-y-1">
                 {navigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
                     href={item.href}
                     className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
-                      item.current
+                      isCurrentPage(item.href)
                         ? 'bg-primary-100 text-primary-900'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                     }`}
+                    onClick={(e) => {
+                      console.log(`📱 Mobile nav: Clicking ${item.name} -> ${item.href}`);
+                      setSidebarOpen(false);
+                    }}
                   >
                     <item.icon className="mr-4 h-6 w-6 text-gray-400" />
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </nav>
@@ -118,17 +142,18 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <ul role="list" className="-mx-2 space-y-1">
                   {navigation.map((item) => (
                     <li key={item.name}>
-                      <a
+                      <Link
                         href={item.href}
                         className={`group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold ${
-                          item.current
+                          isCurrentPage(item.href)
                             ? 'bg-primary-50 text-primary-700'
                             : 'text-gray-700 hover:text-primary-700 hover:bg-gray-50'
                         }`}
+                        onClick={() => console.log(`🖥️ Desktop nav: Clicking ${item.name} -> ${item.href}`)}
                       >
                         <item.icon className="h-6 w-6 shrink-0" />
                         {item.name}
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>

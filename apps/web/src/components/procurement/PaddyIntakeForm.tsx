@@ -239,7 +239,7 @@ export default function PaddyIntakeForm({
           {/* Price per Kg */}
           <div>
             <label htmlFor="pricePerKg" className="block text-sm font-medium text-gray-700 mb-2">
-              Price per Kg (₹) *
+              Price per Kg (₱) *
             </label>
             <input
               id="pricePerKg"
@@ -259,7 +259,7 @@ export default function PaddyIntakeForm({
           {/* Total Amount (Calculated) */}
           <div>
             <label htmlFor="totalAmount" className="block text-sm font-medium text-gray-700 mb-2">
-              Total Amount (₹)
+              Total Amount (₱)
             </label>
             <input
               id="totalAmount"

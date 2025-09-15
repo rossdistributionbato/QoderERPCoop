@@ -47,7 +47,7 @@
     "build:web": "cd apps/web && npm run build",
     "clean": "turbo run clean && rm -rf node_modules",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "prepare": "husky install"
+    "prepare": "node -e \"try { require('husky').install() } catch (e) { console.log('Husky not available, skipping...') }\""
   },
   "devDependencies": {
     "@turbo/gen": "^1.10.12",

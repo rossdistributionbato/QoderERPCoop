@@ -42,12 +42,29 @@ export default function InventoryPage() {
   const fetchInventory = async () => {
     try {
       const { data, error } = await supabase
-        .from('inventory')
+        .from('products')
         .select('*')
         .order('last_updated', { ascending: false });
       
       if (error) throw error;
-      setInventory(data || []);
+      
+      // Map products data to inventory format
+      const mappedInventory = (data || []).map((product: any) => ({
+        id: product.id,
+        product_name: product.name,
+        product_type: 'rice' as const, // Default to rice
+        category: product.category,
+        current_stock: product.stock_quantity || 0,
+        unit: 'kg' as const, // Default unit
+        reorder_level: product.reorder_level || 0,
+        storage_location: 'Main Warehouse', // Default location
+        cost_price: product.cost_price || 0,
+        selling_price: product.unit_price || 0,
+        last_updated: product.updated_at || product.created_at,
+        mill_id: product.user_id || ''
+      }));
+      
+      setInventory(mappedInventory);
     } catch (error) {
       console.error('Error fetching inventory:', error);
     } finally {
@@ -115,11 +132,11 @@ export default function InventoryPage() {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-center">
               <div className="bg-green-500 p-3 rounded-lg">
-                <span className="text-white text-lg">₹</span>
+                <span className="text-white text-lg">₱</span>
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Total Value</p>
-                <p className="text-2xl font-bold text-gray-900">₹{(totalValue / 100000).toFixed(1)}L</p>
+                <p className="text-2xl font-bold text-gray-900">₱{(totalValue / 100000).toFixed(1)}L</p>
               </div>
             </div>
           </div>
@@ -237,10 +254,10 @@ export default function InventoryPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900">
-                            ₹{(item.current_stock * item.cost_price).toLocaleString()}
+                            ₱{(item.current_stock * item.cost_price).toLocaleString()}
                           </div>
                           <div className="text-xs text-gray-500">
-                            @ ₹{item.cost_price}/{item.unit}
+                            @ ₱{item.cost_price}/{item.unit}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

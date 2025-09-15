@@ -1,7 +1,7 @@
 # Netlify Configuration for RiceMillOS
 [build]
   # Build command for the Next.js application
-  command = "npm install && cd apps/web && npm run build"
+  command = "npm install --ignore-scripts && npx turbo@latest run build --filter=@ricemillos/web"
   
   # Directory where the built files are located
   publish = "apps/web/out"

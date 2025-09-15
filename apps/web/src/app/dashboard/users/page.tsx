@@ -13,13 +13,15 @@ const Search = ({ className }: { className?: string }) => <span className={`${cl
 interface User {
   id: string;
   email: string;
-  user_metadata: {
-    full_name?: string;
-    role?: string;
-    mill_id?: string;
-  };
+  first_name: string;
+  last_name: string;
+  phone: string;
+  role: string;
+  mill_id?: string;
+  is_active?: boolean;
+  last_login?: string;
   created_at: string;
-  last_sign_in_at?: string;
+  updated_at?: string;
 }
 
 export default function UsersPage() {
@@ -34,9 +36,14 @@ export default function UsersPage() {
 
   const fetchUsers = async () => {
     try {
-      const { data, error } = await supabase.auth.admin.listUsers();
+      // Query the users table directly instead of using admin API
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .order('created_at', { ascending: false });
+
       if (error) throw error;
-      setUsers(data.users as User[]);
+      setUsers(data as User[]);
     } catch (error) {
       console.error('Error fetching users:', error);
     } finally {
@@ -46,7 +53,7 @@ export default function UsersPage() {
 
   const filteredUsers = users.filter(user =>
     user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.user_metadata?.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
+    `${user.first_name} ${user.last_name}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getRoleBadgeColor = (role?: string) => {
@@ -124,19 +131,19 @@ export default function UsersPage() {
                             </div>
                             <div className="ml-4">
                               <div className="text-sm font-medium text-gray-900">
-                                {user.user_metadata?.full_name || 'No name'}
+                                {`${user.first_name} ${user.last_name}`}
                               </div>
                               <div className="text-sm text-gray-500">{user.email}</div>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getRoleBadgeColor(user.user_metadata?.role)}`}>
-                            {user.user_metadata?.role || 'No role'}
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getRoleBadgeColor(user.role)}`}>
+                            {user.role || 'No role'}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleDateString() : 'Never'}
+                          {user.last_login ? new Date(user.last_login).toLocaleDateString() : 'Never'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">

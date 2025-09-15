@@ -1,90 +1,25 @@
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { createClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/supabase';
 // Note: cookies import moved to server-only file to avoid client/server conflicts
 
-export type Database = {
-  public: {
-    Tables: {
-      users: {
-        Row: {
-          id: string;
-          email: string;
-          full_name: string | null;
-          role: 'super_admin' | 'mill_owner' | 'manager' | 'operator';
-          mill_id: string | null;
-          phone: string | null;
-          is_active: boolean;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          email: string;
-          full_name?: string | null;
-          role?: 'super_admin' | 'mill_owner' | 'manager' | 'operator';
-          mill_id?: string | null;
-          phone?: string | null;
-          is_active?: boolean;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          email?: string;
-          full_name?: string | null;
-          role?: 'super_admin' | 'mill_owner' | 'manager' | 'operator';
-          mill_id?: string | null;
-          phone?: string | null;
-          is_active?: boolean;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-      mills: {
-        Row: {
-          id: string;
-          name: string;
-          owner_name: string;
-          address: string;
-          phone: string;
-          license_number: string | null;
-          capacity_per_day: number | null;
-          is_active: boolean;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          name: string;
-          owner_name: string;
-          address: string;
-          phone: string;
-          license_number?: string | null;
-          capacity_per_day?: number | null;
-          is_active?: boolean;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          name?: string;
-          owner_name?: string;
-          address?: string;
-          phone?: string;
-          license_number?: string | null;
-          capacity_per_day?: number | null;
-          is_active?: boolean;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-    };
-  };
-};
+
 
 // Client-side Supabase client for components
-export const createClientComponentSupabase = () => 
-  createClientComponentClient<Database>();
+let clientInstance: ReturnType<typeof createClient<Database>> | null = null;
+
+export const createClientComponentSupabase = () => {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+  if (!clientInstance) {
+    console.log('🔧 Creating new Supabase client instance');
+    clientInstance = createClient<Database>(supabaseUrl, supabaseKey);
+  } else {
+    console.log('♻️ Reusing existing Supabase client instance');
+  }
+
+  return clientInstance;
+};
 
 // Service role client for admin operations (use with caution)
 export const createServiceRoleClient = () => {

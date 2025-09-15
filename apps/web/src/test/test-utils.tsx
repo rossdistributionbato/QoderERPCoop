@@ -1,7 +1,19 @@
 import { ReactElement } from 'react';
 import { render, RenderOptions } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AuthProvider } from '@/contexts/AuthContext';
+import { createContext, useContext } from 'react';
+
+// Create a mock auth context for testing
+const MockAuthContext = createContext<any>(null);
+
+// Mock AuthProvider component for testing
+function MockAuthProvider({ children, value }: { children: React.ReactNode; value: any }) {
+  return (
+    <MockAuthContext.Provider value={value}>
+      {children}
+    </MockAuthContext.Provider>
+  );
+}
 
 // Mock user data for testing
 export const mockUser = {
@@ -61,9 +73,9 @@ export function renderWithProviders(
   function Wrapper({ children }: { children: React.ReactNode }) {
     return (
       <QueryClientProvider client={queryClient}>
-        <AuthProvider value={mockAuthContext}>
+        <MockAuthProvider value={mockAuthContext}>
           {children}
-        </AuthProvider>
+        </MockAuthProvider>
       </QueryClientProvider>
     );
   }

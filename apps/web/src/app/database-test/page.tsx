@@ -66,7 +66,7 @@ export default function DatabaseTestPage() {
     try {
       // Try to query the table for row count
       const { count, error } = await supabase
-        .from(tableName)
+        .from(tableName as any)
         .select('*', { count: 'exact', head: true });
 
       setTables(prev => prev.map(table => 

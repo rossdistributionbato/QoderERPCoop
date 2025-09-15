@@ -6,7 +6,7 @@ import { useSupabase } from '@/app/providers';
 import type { User } from '@supabase/supabase-js';
 import type { Database } from '@/types/supabase';
 
-type UserProfile = Database['public']['Tables']['users']['Row'];
+type UserProfile = Database['public']['Tables']['profiles']['Row'];
 
 interface AuthState {
   user: User | null;
@@ -61,7 +61,7 @@ export function useAuth(): AuthState {
   const fetchUserProfile = async (userId: string) => {
     try {
       const { data, error } = await supabase
-        .from('users')
+        .from('profiles')
         .select('*')
         .eq('id', userId)
         .single();
@@ -112,15 +112,12 @@ export function useAuth(): AuthState {
       // Create user profile in our users table
       if (data.user) {
         const { error: profileError } = await supabase
-          .from('users')
+          .from('profiles')
           .insert({
             id: data.user.id,
             email: userData.email,
-            phone: userData.phone,
-            first_name: userData.first_name,
-            last_name: userData.last_name,
+            full_name: `${userData.first_name} ${userData.last_name}`,
             role: userData.role || 'operator',
-            mill_id: userData.mill_id,
           });
 
         if (profileError) {

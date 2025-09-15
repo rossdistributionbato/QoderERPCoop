@@ -23,23 +23,36 @@ export default function ProtectedRoute({
 
   useEffect(() => {
     if (!loading) {
+      console.log('🔐 ProtectedRoute check:', {
+        user: user?.email,
+        userRole,
+        requiredRole,
+        requiredPermission,
+        hasPermission: hasPermission(requiredPermission || '')
+      });
+
       // Check if user is authenticated
       if (!user) {
+        console.log('🔐 ProtectedRoute: No user, redirecting to login');
         router.push(fallbackPath);
         return;
       }
 
       // Check role requirement
       if (requiredRole && userRole !== requiredRole) {
+        console.log('🔐 ProtectedRoute: Wrong role, redirecting to dashboard');
         router.push('/dashboard'); // Redirect to dashboard if wrong role
         return;
       }
 
       // Check permission requirement
       if (requiredPermission && !hasPermission(requiredPermission)) {
+        console.log('🔐 ProtectedRoute: No permission, redirecting to dashboard');
         router.push('/dashboard'); // Redirect to dashboard if no permission
         return;
       }
+
+      console.log('🔐 ProtectedRoute: Access granted');
     }
   }, [user, loading, userRole, requiredRole, requiredPermission, router, hasPermission, fallbackPath]);
 

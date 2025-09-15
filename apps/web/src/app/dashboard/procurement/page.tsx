@@ -41,20 +41,36 @@ export default function ProcurementPage() {
   const fetchIntakes = async () => {
     try {
       const { data, error } = await supabase
-        .from('paddy_intake')
+        .from('paddy_intakes')
         .select(`
           *,
-          farmers!inner(name)
+          farmers (
+            first_name,
+            last_name
+          )
         `)
         .order('created_at', { ascending: false });
-      
+
       if (error) throw error;
-      
-      const formattedData = data?.map(item => ({
-        ...item,
-        farmer_name: item.farmers?.name || 'Unknown'
-      })) || [];
-      
+
+      // Map paddy_intakes data to expected format
+      const formattedData = (data || []).map((item: any) => ({
+        id: item.id,
+        farmer_id: item.farmer_id || '',
+        farmer_name: item.farmers ? `${item.farmers.first_name} ${item.farmers.last_name}` : 'Unknown Farmer',
+        intake_date: item.intake_date || item.created_at || '',
+        vehicle_number: item.vehicle_number || 'N/A',
+        gross_weight: item.gross_weight || 0,
+        tare_weight: item.tare_weight || 0,
+        net_weight: item.net_weight || 0,
+        moisture_content: item.moisture_percentage || 0,
+        quality_grade: item.quality_grade || 'B',
+        rate_per_quintal: item.rate_per_kg * 100 || 0, // Convert kg rate to quintal rate
+        total_amount: item.total_amount || 0,
+        payment_status: 'pending' as const, // paddy_intakes doesn't have payment_status field
+        created_at: item.created_at || ''
+      }));
+
       setIntakes(formattedData);
     } catch (error) {
       console.error('Error fetching intakes:', error);
@@ -133,11 +149,11 @@ export default function ProcurementPage() {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-center">
               <div className="bg-purple-500 p-3 rounded-lg">
-                <span className="text-white text-lg">₹</span>
+                <span className="text-white text-lg">₱</span>
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Total Value</p>
-                <p className="text-2xl font-bold text-gray-900">₹{(totalAmount / 100000).toFixed(1)}L</p>
+                <p className="text-2xl font-bold text-gray-900">₱{(totalAmount / 100000).toFixed(1)}L</p>
               </div>
             </div>
           </div>
@@ -209,7 +225,7 @@ export default function ProcurementPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        ₹{intake.total_amount.toLocaleString()}
+                        ₱{intake.total_amount.toLocaleString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPaymentStatusColor(intake.payment_status)}`}>

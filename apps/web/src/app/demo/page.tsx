@@ -238,7 +238,7 @@ function FarmersDemo() {
                 <tr key={index} className="border-b border-gray-100">
                   <td className="py-3 px-3 text-sm text-gray-900">{farmer.name}</td>
                   <td className="py-3 px-3 text-sm text-gray-600">{farmer.village}</td>
-                  <td className="py-3 px-3 text-sm text-gray-600">₹{farmer.credit}</td>
+                  <td className="py-3 px-3 text-sm text-gray-600">₱{farmer.credit}</td>
                   <td className="py-3 px-3 text-sm text-gray-600">{farmer.lastTransaction}</td>
                 </tr>
               ))}
@@ -325,7 +325,7 @@ function SalesDemo() {
                 <p className="text-xs text-gray-600">{sale.date}</p>
               </div>
               <div className="text-right">
-                <p className="text-sm font-medium text-gray-900">₹{sale.amount}</p>
+                <p className="text-sm font-medium text-gray-900">₱{sale.amount}</p>
                 <p className="text-xs text-gray-600">{sale.quantity}</p>
               </div>
             </div>
@@ -347,15 +347,15 @@ function ReportsDemo() {
           <div className="space-y-3">
             <div className="flex justify-between">
               <span className="text-sm text-gray-600">Total Revenue</span>
-              <span className="text-sm font-medium text-gray-900">₹4,85,000</span>
+              <span className="text-sm font-medium text-gray-900">₱4,85,000</span>
             </div>
             <div className="flex justify-between">
               <span className="text-sm text-gray-600">Expenses</span>
-              <span className="text-sm font-medium text-gray-900">₹3,20,000</span>
+              <span className="text-sm font-medium text-gray-900">₱3,20,000</span>
             </div>
             <div className="flex justify-between">
               <span className="text-sm text-gray-600">Net Profit</span>
-              <span className="text-sm font-medium text-green-600">₹1,65,000</span>
+              <span className="text-sm font-medium text-green-600">₱1,65,000</span>
             </div>
           </div>
         </div>
@@ -382,7 +382,7 @@ function ReportsDemo() {
 const dashboardStats = [
   { name: 'Active Farmers', value: '247', icon: Users, iconColor: 'text-blue-600' },
   { name: 'Rice Stock', value: '1,250', icon: Package, iconColor: 'text-green-600' },
-  { name: 'Monthly Revenue', value: '₹4.8L', icon: Calculator, iconColor: 'text-purple-600' },
+  { name: 'Monthly Revenue', value: '₱4.8L', icon: Calculator, iconColor: 'text-purple-600' },
   { name: 'Conversion Rate', value: '72%', icon: TrendingUp, iconColor: 'text-orange-600' },
 ];
 

@@ -33,15 +33,14 @@ export function usePaddyIntake(): PaddyIntakeHook {
 
     try {
       const { data: result, error: submitError } = await supabase
-        .from('paddy_intakes')
+        .from('activities')
         .insert([{
-          farmer_id: data.farmerId,
-          weight: data.weight,
-          moisture_content: data.moistureContent,
-          quality_grade: data.qualityGrade,
-          price_per_kg: data.pricePerKg,
-          total_amount: data.totalAmount,
-          intake_date: data.date,
+          title: `Paddy Intake - ${data.weight}kg`,
+          description: `Quality: ${data.qualityGrade}, Moisture: ${data.moistureContent}%, Price: $${data.pricePerKg}/kg, Total: $${data.totalAmount}`,
+          type: 'paddy_intake',
+          entity_type: 'farmer',
+          entity_id: data.farmerId,
+          user_id: '',  // We'll need to get this from auth context
           created_at: new Date().toISOString(),
         }])
         .select()

@@ -1,7 +1,7 @@
 'use client';
 
-import DashboardLayout from '@/components/layout/DashboardLayout';
-import { useAuth } from '@/contexts/AuthContext';
+import DashboardLayout from '../../components/layout/DashboardLayout';
+import { useAuth } from '../../contexts/AuthContext';
 
 // Unicode icon components
 const Users = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>👥</span>;
@@ -12,6 +12,8 @@ const Wheat = ({ className }: { className?: string }) => <span className={`${cla
 const AlertTriangle = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>⚠️</span>;
 const ArrowUpRight = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>↗️</span>;
 const ArrowDownRight = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>↘️</span>;
+const FileText = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>📄</span>;
+const Target = ({ className }: { className?: string }) => <span className={`${className} inline-block`}>🎯</span>;
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -36,7 +38,7 @@ export default function DashboardPage() {
     },
     {
       name: 'Monthly Revenue',
-      value: '₹4.8L',
+      value: '₱4.8L',
       change: '+25%',
       changeType: 'increase',
       icon: Calculator,
@@ -65,7 +67,7 @@ export default function DashboardPage() {
       id: 2,
       type: 'sale',
       description: 'Rice sale to Wholesale Mart',
-      amount: '₹25,000',
+      amount: '₱25,000',
       time: '4 hours ago',
       icon: Calculator,
     },
@@ -176,33 +178,75 @@ export default function DashboardPage() {
           {/* Upcoming Tasks */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200">
             <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Upcoming Tasks</h2>
-              <p className="text-sm text-gray-600">Things that need your attention</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">Performance Insights</h2>
+                  <p className="text-sm text-gray-600">Key analytics and trends</p>
+                </div>
+                <a 
+                  href="/dashboard/analytics" 
+                  className="text-sm text-primary-600 hover:text-primary-800 font-medium"
+                >
+                  View All →
+                </a>
+              </div>
             </div>
             <div className="p-6">
               <div className="space-y-4">
-                {upcomingTasks.map((task) => (
-                  <div key={task.id} className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">{task.title}</p>
-                      <p className="text-sm text-gray-500">Due: {task.dueDate}</p>
-                    </div>
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      task.priority === 'high'
-                        ? 'bg-red-100 text-red-800'
-                        : task.priority === 'medium'
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : 'bg-green-100 text-green-800'
-                    }`}>
-                      {task.priority}
-                    </span>
+                {/* Revenue Trend */}
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm font-medium text-gray-700">Revenue Trend</span>
+                    <span className="text-sm text-green-600 font-medium">+26.5%</span>
                   </div>
-                ))}
+                  <div className="h-8 bg-gray-50 rounded flex items-end justify-between px-1">
+                    {[65, 59, 80, 81, 56, 55, 40, 65, 59, 80, 81, 95].map((height, index) => (
+                      <div 
+                        key={index}
+                        className="bg-primary-500 rounded-t-sm w-2"
+                        style={{ height: `${height}%` }}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Key Metrics */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center p-3 bg-green-50 rounded-lg">
+                    <p className="text-xl font-bold text-green-600">92.3%</p>
+                    <p className="text-xs text-green-700">Quality Score</p>
+                  </div>
+                  <div className="text-center p-3 bg-blue-50 rounded-lg">
+                    <p className="text-xl font-bold text-blue-600">68.5%</p>
+                    <p className="text-xs text-blue-700">Conversion Rate</p>
+                  </div>
+                </div>
               </div>
-              <div className="mt-6">
-                <button className="w-full text-center text-sm text-primary-600 hover:text-primary-500 font-medium">
-                  View all tasks
-                </button>
+              
+              <div className="mt-6 pt-4 border-t border-gray-200">
+                <div className="grid grid-cols-3 gap-3">
+                  <a 
+                    href="/dashboard/reports" 
+                    className="text-center py-2 px-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  >
+                    <FileText className="h-4 w-4 mx-auto mb-1 text-gray-600" />
+                    <span className="text-xs text-gray-700">Reports</span>
+                  </a>
+                  <a 
+                    href="/dashboard/kpi" 
+                    className="text-center py-2 px-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  >
+                    <Target className="h-4 w-4 mx-auto mb-1 text-gray-600" />
+                    <span className="text-xs text-gray-700">KPIs</span>
+                  </a>
+                  <a 
+                    href="/dashboard/executive" 
+                    className="text-center py-2 px-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  >
+                    <TrendingUp className="h-4 w-4 mx-auto mb-1 text-gray-600" />
+                    <span className="text-xs text-gray-700">Executive</span>
+                  </a>
+                </div>
               </div>
             </div>
           </div>

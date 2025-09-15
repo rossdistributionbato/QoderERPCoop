@@ -45,12 +45,36 @@ export default function SalesPage() {
   const fetchSales = async () => {
     try {
       const { data, error } = await supabase
-        .from('sales')
-        .select('*')
+        .from('sales_orders')
+        .select(`
+          *,
+          customers (
+            name,
+            phone
+          )
+        `)
         .order('created_at', { ascending: false });
-      
+
       if (error) throw error;
-      setSales(data || []);
+
+      // Map sales_orders data to Sale interface format
+      const mappedSales = (data || []).map((order: any) => ({
+        id: order.id,
+        customer_name: order.customers?.name || order.customer_id || 'Unknown Customer',
+        customer_phone: order.customers?.phone || 'N/A',
+        sale_date: order.order_date || order.created_at || '',
+        products: [], // Would need to join with sales_items table
+        total_amount: order.total_amount || 0,
+        payment_method: 'cash' as 'cash' | 'card' | 'upi' | 'credit', // sales_orders doesn't have payment_method field
+        payment_status: 'pending' as 'paid' | 'pending' | 'partial', // sales_orders doesn't have payment_status field
+        discount_amount: order.discount_amount || 0,
+        tax_amount: order.tax_amount || 0,
+        notes: order.remarks,
+        created_at: order.created_at || '',
+        mill_id: order.mill_id || ''
+      }));
+
+      setSales(mappedSales);
     } catch (error) {
       console.error('Error fetching sales:', error);
     } finally {
@@ -122,11 +146,11 @@ export default function SalesPage() {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-center">
               <div className="bg-green-500 p-3 rounded-lg">
-                <span className="text-white text-lg">₹</span>
+                <span className="text-white text-lg">₱</span>
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-                <p className="text-2xl font-bold text-gray-900">₹{(totalRevenue / 100000).toFixed(1)}L</p>
+                <p className="text-2xl font-bold text-gray-900">₱{(totalRevenue / 100000).toFixed(1)}L</p>
               </div>
             </div>
           </div>
@@ -227,7 +251,7 @@ export default function SalesPage() {
                         {sale.products?.length || 0} items
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        ₹{sale.total_amount.toLocaleString()}
+                        ₱{sale.total_amount.toLocaleString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPaymentMethodColor(sale.payment_method)}`}>

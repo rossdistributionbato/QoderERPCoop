@@ -38,7 +38,7 @@ export function useFarmers(): FarmersHook {
 
     try {
       const { data, error: fetchError } = await supabase
-        .from('farmers')
+        .from('suppliers')
         .select('*')
         .order('name');
 
@@ -53,7 +53,7 @@ export function useFarmers(): FarmersHook {
         email: farmer.email,
         phone: farmer.phone,
         address: farmer.address,
-        registrationDate: farmer.registration_date,
+        registrationDate: farmer.created_at,
         isActive: farmer.is_active,
       })) || [];
 
@@ -68,14 +68,15 @@ export function useFarmers(): FarmersHook {
   const createFarmer = async (farmerData: Partial<Farmer>) => {
     try {
       const { data, error: createError } = await supabase
-        .from('farmers')
+        .from('suppliers')
         .insert([{
-          name: farmerData.name,
+          name: farmerData.name || '',
           email: farmerData.email,
           phone: farmerData.phone,
           address: farmerData.address,
           is_active: farmerData.isActive ?? true,
-          registration_date: new Date().toISOString(),
+          created_at: new Date().toISOString(),
+          user_id: '',  // We'll need to get this from auth context
         }])
         .select()
         .single();
@@ -95,7 +96,7 @@ export function useFarmers(): FarmersHook {
   const updateFarmer = async (id: string, farmerData: Partial<Farmer>) => {
     try {
       const { data, error: updateError } = await supabase
-        .from('farmers')
+        .from('suppliers')
         .update({
           name: farmerData.name,
           email: farmerData.email,
@@ -122,7 +123,7 @@ export function useFarmers(): FarmersHook {
   const deleteFarmer = async (id: string) => {
     try {
       const { data, error: deleteError } = await supabase
-        .from('farmers')
+        .from('suppliers')
         .delete()
         .eq('id', id);
 

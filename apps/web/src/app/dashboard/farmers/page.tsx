@@ -50,9 +50,29 @@ export default function FarmersPage() {
         .from('farmers')
         .select('*')
         .order('created_at', { ascending: false });
-      
+
       if (error) throw error;
-      setFarmers(data || []);
+
+      // Map farmers data to expected format
+      const mappedFarmers = (data || []).map((farmer: any) => ({
+        id: farmer.id,
+        name: `${farmer.first_name} ${farmer.last_name}`,
+        phone: farmer.phone || '',
+        email: farmer.email || '',
+        address: farmer.address || '',
+        village: farmer.village || '',
+        tehsil: 'N/A', // Farmers table doesn't have tehsil field
+        district: farmer.district || '',
+        state: farmer.state || '',
+        pincode: farmer.pincode || '',
+        aadhar_number: '',
+        paddy_land_area: undefined, // Farmers table doesn't have paddy_land_area field
+        created_at: farmer.created_at,
+        updated_at: farmer.updated_at,
+        mill_id: farmer.mill_id || ''
+      }));
+
+      setFarmers(mappedFarmers);
     } catch (error) {
       console.error('Error fetching farmers:', error);
     } finally {
